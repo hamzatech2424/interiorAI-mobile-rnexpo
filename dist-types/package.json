@@ -1,0 +1,6 @@
+{
+    "name": "@interiorai/types",
+    "version": "1.0.0",
+    "main": "trpc/index.d.ts",
+    "types": "trpc/index.d.ts"
+  }

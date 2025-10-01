@@ -1,50 +1,144 @@
-# Welcome to your Expo app 👋
+# Interior AI Backend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A robust backend API built with Bun, Hono, and Drizzle ORM featuring advanced database connection management and error handling.
 
-## Get started
+## 🚀 Quick Start
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Installation
 
 ```bash
-npm run reset-project
+bun install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Environment Setup
 
-## Learn more
+Create a `.env` file with the following variables:
 
-To learn more about developing your project with Expo, look at the following resources:
+```env
+DATABASE_URL=postgresql://username:password@host:port/database
+PORT=3000
+NODE_ENV=development
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Running the Server
 
-## Join the community
+```bash
+# Development mode with hot reload
+bun run dev
 
-Join our community of developers creating universal apps.
+# Production mode
+bun run start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🗄️ Database Features
+
+### Connection Management
+
+The backend includes advanced database connection management with:
+
+- **Automatic Connection Retry**: Exponential backoff retry logic (up to 5 attempts)
+- **Connection Status Tracking**: Real-time monitoring of database connection state
+- **Health Checks**: Built-in health monitoring and status reporting
+- **Graceful Shutdown**: Proper connection cleanup on server termination
+- **Error Handling**: Comprehensive error handling with detailed logging
+
+### Database Status States
+
+- `connecting` - Initial connection attempt
+- `connected` - Successfully connected and ready
+- `disconnected` - Connection closed or not established
+- `error` - Connection failed or encountered an error
+
+### Health Check Endpoint
+
+Monitor your database health via the `/health` endpoint:
+
+```bash
+curl http://localhost:3000/health
+```
+
+Response includes:
+- Overall application health
+- Database connection status
+- Server uptime and memory usage
+- Timestamp information
+
+### Testing Database Connection
+
+Run the included test script to verify database functionality:
+
+```bash
+bun test-db-connection.ts
+```
+
+## 🛠️ Database Operations
+
+### Using the Database
+
+```typescript
+import { db } from './helper/databaseConnection';
+import { usersTable } from './modals/schema';
+import { eq } from 'drizzle-orm';
+
+// Get database instance (with connection validation)
+const database = db();
+
+// Query users
+const users = await database.select().from(usersTable);
+
+// Find user by ID
+const user = await database.select().from(usersTable)
+  .where(eq(usersTable.betterAuthId, userId));
+```
+
+### Connection Utilities
+
+```typescript
+import { getDBStatus, healthCheck, reconnectDB } from './helper/databaseConnection';
+
+// Check current connection status
+const status = getDBStatus();
+
+// Perform health check
+const health = await healthCheck();
+
+// Manually reconnect
+await reconnectDB();
+```
+
+## 📊 Monitoring & Logging
+
+The application provides detailed logging for database operations:
+
+- 🔄 Connection initialization attempts
+- ✅ Successful connection confirmations
+- ❌ Connection failures with error details
+- 🔄 Retry attempts with backoff timing
+- 🔌 Graceful connection closures
+
+## 🏗️ Architecture
+
+- **Runtime**: Bun (fast JavaScript runtime)
+- **Framework**: Hono (lightweight web framework)
+- **ORM**: Drizzle ORM with PostgreSQL
+- **Database**: PostgreSQL with connection pooling
+- **Authentication**: Better Auth integration
+
+## 📝 Available Scripts
+
+```bash
+# Development
+bun run dev          # Start with hot reload
+
+# Database
+bun run db:generate  # Generate migrations
+bun run db:migrate   # Run migrations
+bun run db:push      # Push schema to database
+bun run db:studio    # Open Drizzle Studio
+bun run db:reset     # Reset database
+
+# Testing
+bun test-db-connection.ts  # Test database features
+```
+
+This project was created using `bun init` in bun v1.2.21. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

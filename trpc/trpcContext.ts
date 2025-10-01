@@ -1,16 +1,19 @@
 import { TRPCError } from '@trpc/server';
 import type { Context as HonoContext } from 'hono';
-import { auth } from '../auth'; // your better-auth setup
+import { auth } from '../auth';
 
 export async function createContext(c: HonoContext) {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const headers = Object.fromEntries(c.req.headers);
+  console.log('Incoming headers:', headers);
+
+  const session = await auth.api.getSession({ headers });
 
   if (!session) {
-    // 🚫 Block right here if no valid session
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'No valid session. Please login first.',
-    });
+    return c.json({
+      success: false,
+      error: "Unauthorized",
+      message: "No valid session. Please login first."
+    }, 401);
   }
 
   return {

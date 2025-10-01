@@ -19,7 +19,7 @@ app.use('/api/auth/*', (c) => auth.handler(c.req.raw));
 app.use('*', logger());
 app.use('*', cors());
 
-app.get('/api/user/secure-endpoint',authorization, syncUser)
+app.get('/api/user/secure-endpoint', authorization, syncUser)
 
 
 // Custom endpoint configuration

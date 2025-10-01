@@ -24,4 +24,13 @@ export const auth = betterAuth({
             verification
         }
     }),
+    socialProviders: {
+        apple: {
+          clientId: process.env.APPLE_SERVICE_ID as string,          // Service ID or App ID
+          teamId: process.env.APPLE_TEAM_ID as string,              // Your Apple Team ID
+          keyId: process.env.APPLE_KEY_ID as string,                // Apple Key ID
+          privateKey: process.env.APPLE_PRIVATE_KEY as string,      // Private key (.p8 content)
+          appBundleIdentifier: process.env.APPLE_APP_BUNDLE_ID as string, // iOS bundle ID
+        },
+      },
 });

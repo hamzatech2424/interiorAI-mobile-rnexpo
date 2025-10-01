@@ -1,17 +1,17 @@
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
-import { sql } from 'drizzle-orm'
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { sql } from "drizzle-orm";
 
 // Database connection status
 export enum DBStatus {
-  CONNECTING = 'connecting',
-  CONNECTED = 'connected',
-  DISCONNECTED = 'disconnected',
-  ERROR = 'error'
+  CONNECTING = "connecting",
+  CONNECTED = "connected",
+  DISCONNECTED = "disconnected",
+  ERROR = "error",
 }
 
 class DatabaseConnection {
-  private client: postgres.Sql | null = null;
+  private pool: Pool | null = null;
   private db: ReturnType<typeof drizzle> | null = null;
   private status: DBStatus = DBStatus.DISCONNECTED;
   private retryCount = 0;
@@ -25,66 +25,68 @@ class DatabaseConnection {
   private async initializeConnection() {
     try {
       this.status = DBStatus.CONNECTING;
-      console.log('🔄 Initializing database connection...');
+      console.log("🔄 Initializing database connection...");
 
       const connectionString = process.env.DATABASE_URL;
-      
+
       if (!connectionString) {
-        throw new Error('DATABASE_URL environment variable is not set');
+        throw new Error("DATABASE_URL environment variable is not set");
       }
 
-      this.client = postgres(connectionString, { 
-        prepare: false,
+      this.pool = new Pool({
+        connectionString,
         max: 20, // Maximum number of connections
-        idle_timeout: 20,
-        connect_timeout: 60,
+        idleTimeoutMillis: 20000,
+        connectionTimeoutMillis: 60000,
       });
 
-      this.db = drizzle(this.client);
+      this.db = drizzle(this.pool);
 
       // Test the connection
       await this.testConnection();
-      
+
       this.status = DBStatus.CONNECTED;
       this.retryCount = 0;
-      console.log('✅ Database connected successfully!');
-
+      console.log("✅ Database connected successfully!");
     } catch (error) {
       this.status = DBStatus.ERROR;
-      console.error('❌ Database connection failed:', error);
-      
+      console.error("❌ Database connection failed:", error);
+
       if (this.retryCount < this.maxRetries) {
         await this.retryConnection();
       } else {
-        console.error('💀 Max retry attempts reached. Database connection failed permanently.');
+        console.error(
+          "💀 Max retry attempts reached. Database connection failed permanently."
+        );
       }
     }
   }
 
   private async testConnection() {
-    if (!this.db) {
-      throw new Error('Database instance not initialized');
+    if (!this.db || !this.pool) {
+      throw new Error("Database instance not initialized");
     }
-    
+
     // Simple query to test connection
-    await this.db.execute(sql`SELECT 1 as test`);
+    await this.pool.query("SELECT 1 as test");
   }
 
   private async retryConnection() {
     this.retryCount++;
     const delay = this.retryDelay * Math.pow(2, this.retryCount - 1); // Exponential backoff
-    
-    console.log(`🔄 Retrying database connection (attempt ${this.retryCount}/${this.maxRetries}) in ${delay}ms...`);
-    
+
+    console.log(
+      `🔄 Retrying database connection (attempt ${this.retryCount}/${this.maxRetries}) in ${delay}ms...`
+    );
+
     setTimeout(() => {
       this.initializeConnection();
     }, delay);
   }
 
-
   public getDb() {
     if (!this.db) {
-      throw new Error('Database is not connected. Please check your connection.');
+      throw new Error("Database is not connected. Please check your connection.");
     }
     return this.db;
   }
@@ -94,20 +96,20 @@ class DatabaseConnection {
   }
 
   public async reconnect() {
-    console.log('🔄 Manually reconnecting to database...');
+    console.log("🔄 Manually reconnecting to database...");
     this.retryCount = 0;
     await this.initializeConnection();
   }
 
   public async close() {
     try {
-      if (this.client) {
-        await this.client.end();
-        console.log('🔌 Database connection closed');
+      if (this.pool) {
+        await this.pool.end();
+        console.log("🔌 Database connection closed");
       }
       this.status = DBStatus.DISCONNECTED;
     } catch (error) {
-      console.error('Error closing database connection:', error);
+      console.error("Error closing database connection:", error);
     }
   }
 }

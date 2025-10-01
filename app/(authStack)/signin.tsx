@@ -4,7 +4,7 @@ import { logConnectionInfo } from '@/utils/testConnection';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   StyleSheet,

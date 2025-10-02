@@ -1,9 +1,7 @@
-import { signUp } from '@/helper/auth-client';
-import { errorToast, successToast } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   StyleSheet,
@@ -18,7 +16,9 @@ import AuthHeader from '../../components/AuthHeader';
 import Background from '../../components/Background';
 import CustomButton from '../../components/CustomButton';
 import FormInput from '../../components/FormInput';
+import { signUp } from '../../helper/auth-client';
 import { useTheme } from '../../hooks/useTheme';
+import { errorToast, successToast } from '../../utils';
 
 // Validation schema
 const SignUpSchema = Yup.object().shape({

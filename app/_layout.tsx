@@ -1,11 +1,11 @@
-import { createTrpcClient, TRPCProvider } from '@/services/trpc';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { Provider } from 'react-redux';
 import { useTheme } from '../hooks/useTheme';
+import { createTrpcClient, TRPCProvider } from '../services/trpc';
 import { store } from '../store';
 
 

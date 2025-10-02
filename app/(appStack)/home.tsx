@@ -1,9 +1,7 @@
-import useAuthController, { logout } from '@/controllerHooks/useAuthController';
-import { trpc } from '@/services/trpc';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,7 +12,9 @@ import {
   View
 } from 'react-native';
 import { borderRadius, shadows, spacing, typography } from '../../colors';
+import useAuthController, { logout } from '../../controllerHooks/useAuthController';
 import { useTheme } from '../../hooks/useTheme';
+import { trpc } from '../../services/trpc';
 
 export default function HomeScreen() {
   const { colors, isDark } = useTheme();

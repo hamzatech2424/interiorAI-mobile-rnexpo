@@ -1,8 +1,8 @@
-import { signOut } from "@/helper/auth-client";
-import { useApiClient } from "@/services/apiClient";
-import { setUserData } from "@/store/slices/authSlice";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
+import { signOut } from "../helper/auth-client";
+import { useApiClient } from "../services/apiClient";
+import { setUserData } from "../store/slices/authSlice";
 
 
 

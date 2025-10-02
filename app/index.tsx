@@ -1,8 +1,6 @@
-import Background from '@/components/Background';
-import { useSession } from '@/helper/auth-client';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   Dimensions,
   StatusBar,
@@ -17,6 +15,8 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 import { borderRadius, shadows, spacing } from '../colors';
+import Background from '../components/Background';
+import { useSession } from '../helper/auth-client';
 import { useTheme } from '../hooks/useTheme';
 
 const { width, height } = Dimensions.get('window');

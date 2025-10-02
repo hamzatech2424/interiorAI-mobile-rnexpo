@@ -1,10 +1,7 @@
-import { signIn } from '@/helper/auth-client';
-import { errorToast, successToast } from '@/utils';
-import { logConnectionInfo } from '@/utils/testConnection';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Alert,
   StyleSheet,
@@ -19,7 +16,10 @@ import AuthHeader from '../../components/AuthHeader';
 import Background from '../../components/Background';
 import CustomButton from '../../components/CustomButton';
 import FormInput from '../../components/FormInput';
+import { signIn } from "../../helper/auth-client";
 import { useTheme } from '../../hooks/useTheme';
+import { errorToast, successToast } from "../../utils";
+import { logConnectionInfo } from "../../utils/testConnection";
 
 
 // Validation schema

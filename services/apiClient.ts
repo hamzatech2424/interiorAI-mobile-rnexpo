@@ -1,7 +1,7 @@
-import { logout } from "@/controllerHooks/useAuthController";
-import { getCookie } from "@/helper/auth-client";
 import axios from "axios";
 import { Alert } from "react-native";
+import { logout } from "../controllerHooks/useAuthController";
+import { getCookie } from "../helper/auth-client";
 import { BASE_URL } from "../proxy";
 
 let isHandlingSessionExpiry = false;

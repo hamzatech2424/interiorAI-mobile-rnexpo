@@ -1,8 +1,8 @@
-import { getCookie } from '@/helper/auth-client';
 import { AppRouter } from '@interiorai/types';
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import Constants from 'expo-constants';
+import { getCookie } from '../helper/auth-client';
 export const trpc = createTRPCReact<AppRouter>();
 
 export const TRPCProvider = trpc.Provider;
